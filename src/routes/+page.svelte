@@ -53,6 +53,9 @@
   // Calculate the time left until the end of the day in minutes
   $: timeLeft = calculateTimeLeft(now, startTime, endTime, lunchTime, lunchEndTime);
 
+  // Calculate the total time per day
+  $: totalTime = minutesToDate(endTime - startTime - (lunchEndTime - lunchTime))
+
   onMount(() => {
     // Create a timer that updates every second
     timer = setInterval(() => {
@@ -93,7 +96,7 @@
   </div>
   
   <div class="text-center">
-    <p>Time today: {minutesToDate(endTime - startTime).getHours()} hours {minutesToDate(endTime - startTime).getMinutes()} minutes</p>
+    <p>Time today: {totalTime.getHours()} hours {totalTime.getMinutes()} minutes</p>
     <p>Now: {now.toTimeString().substring(0, 8)}</p>
     <p>Time left today: {timeLeft} minutes</p>
   </div>
