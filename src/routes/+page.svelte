@@ -1,22 +1,15 @@
 <script>
   import { onMount } from 'svelte';
+  import { startTime, endTime, lunchTime, lunchEndTime } from '../stores/parameters.js';
 
   let now = new Date();
 
-  // Start the day at 9:00, the start is before the lunch
-  let startTime = 540;
-  $: startTime = Math.min(lunchTime, startTime);
-
-  // End the day at 17:00
-  let endTime = 1020;
-
-  // Start the lunch at 12:00, the lunch is before the end of the lunch
-  let lunchTime = 720;
-  $: lunchTime = Math.min(lunchEndTime, lunchTime);
-
-  // End the lunch at 13:00, the end of the lunch
-  let lunchEndTime = 780;
-  $: lunchEndTime = Math.min(endTime, lunchEndTime);
+  // The start is before the lunch
+  $: $startTime = Math.min($lunchTime, $startTime);
+  // The lunch is before the end of the lunch
+  $: $lunchTime = Math.min($lunchEndTime, $lunchTime);
+  // The end of the lunch is before the end of the day
+  $: $lunchEndTime = Math.min($endTime, $lunchEndTime);
   
   // Convert minutes to date
   const minutesToDate = (minutes) => {
@@ -51,10 +44,10 @@
   }
 
   // Calculate the time left until the end of the day in minutes
-  $: timeLeft = calculateTimeLeft(now, startTime, endTime, lunchTime, lunchEndTime);
+  $: timeLeft = calculateTimeLeft(now, $startTime, $endTime, $lunchTime, $lunchEndTime);
 
   // Calculate the total time per day
-  $: totalTime = minutesToDate(endTime - startTime - (lunchEndTime - lunchTime))
+  $: totalTime = minutesToDate($endTime - $startTime - ($lunchEndTime - $lunchTime))
 
   onMount(() => {
     // Create a timer that updates every second
@@ -76,23 +69,23 @@
   <h1 class="text-center">How much time left today?</h1>
 
   <div class="input-group mb-3">
-    <span class="input-group-text" id="start-time">Start time: {minutesToDate(startTime).toTimeString().substring(0, 5)}</span>
-    <input type="range" class="form-range" aria-describedby="start-time" min=0 max=1440 bind:value={startTime}>
+    <span class="input-group-text" id="start-time">Start time: {minutesToDate($startTime).toTimeString().substring(0, 5)}</span>
+    <input type="range" class="form-range" aria-describedby="start-time" min=0 max=1440 bind:value={$startTime}>
   </div>
   
   <div class="input-group mb-3">
-    <span class="input-group-text" id="end-time">End time: {minutesToDate(endTime).toTimeString().substring(0, 5)}</span>
-    <input type="range" class="form-range" aria-describedby="end-time" min=0 max=1440 bind:value={endTime}>
+    <span class="input-group-text" id="end-time">End time: {minutesToDate($endTime).toTimeString().substring(0, 5)}</span>
+    <input type="range" class="form-range" aria-describedby="end-time" min=0 max=1440 bind:value={$endTime}>
   </div>
   
   <div class="input-group mb-3">
-    <span class="input-group-text" id="lunch-time">Lunch time: {minutesToDate(lunchTime).toTimeString().substring(0, 5)}</span>
-    <input type="range" class="form-range" aria-describedby="lunch-time" min=0 max=1440 bind:value={lunchTime}>
+    <span class="input-group-text" id="lunch-time">Lunch time: {minutesToDate($lunchTime).toTimeString().substring(0, 5)}</span>
+    <input type="range" class="form-range" aria-describedby="lunch-time" min=0 max=1440 bind:value={$lunchTime}>
   </div>
   
   <div class="input-group mb-3">
-    <span class="input-group-text" id="lunch-end-time">Lunch end time: {minutesToDate(lunchEndTime).toTimeString().substring(0, 5)}</span>
-    <input type="range" class="form-range" aria-describedby="lunch-end-time" min=0 max=1440 bind:value={lunchEndTime}>
+    <span class="input-group-text" id="lunch-end-time">Lunch end time: {minutesToDate($lunchEndTime).toTimeString().substring(0, 5)}</span>
+    <input type="range" class="form-range" aria-describedby="lunch-end-time" min=0 max=1440 bind:value={$lunchEndTime}>
   </div>
   
   <div class="text-center">
