@@ -58,7 +58,7 @@
 
   onMount(() => {
     // Create a timer that updates every second
-    timer = setInterval(() => {
+    let timer = setInterval(() => {
       // Update the time
       now = new Date();
     }, 1000);
